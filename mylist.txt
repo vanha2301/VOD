@@ -1,0 +1,13 @@
+file 'D:/VOD/temp_mix/clip_0.mp3'
+file 'D:/VOD/temp_mix/silence.mp3'
+inpoint 0
+outpoint 0.09600000000000009
+file 'D:/VOD/temp_mix/clip_1.mp3'
+file 'D:/VOD/temp_mix/silence.mp3'
+inpoint 0
+outpoint 0.14400000000000013
+file 'D:/VOD/temp_mix/clip_2.mp3'
+file 'D:/VOD/temp_mix/silence.mp3'
+inpoint 0
+outpoint 0.23999999999999932
+file 'D:/VOD/temp_mix/clip_3.mp3'
