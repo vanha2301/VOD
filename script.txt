@@ -1,151 +1,123 @@
-[0.00s -> 2.16s] Bạn có dám tin thiếu niên này thê thảm đến mức nào không?
-[2.16s -> 5.16s] Xuyên không tới đây, không có hệ thống, cũng chẳng có "lão gia gia" độ trì.
-[5.16s -> 9.36s] Nỗ lực tu đạo ngàn năm, "cẩu" đến kỳ Nguyên Anh, lại rơi vào một cuộc khủng hoảng.
-[9.36s -> 11.36s] Liên tục hồi quy trước khi thế giới bị diệt vong.
-[11.36s -> 22.00s] Ta tự phong là "Cẩu Thần", quán triệt đạo "cẩu" (ẩn nhẫn) trong suốt gần ngàn năm tu đạo.
-[22.00s -> 25.26s] Nếu cứ thế mà "tẹo" một cách dễ dàng, chẳng phải sẽ ôm hận suốt đời sao.
-[25.26s -> 30.22s] Mà cái sự "trọn đời" này sao lại có cảm giác quen thuộc khó tả thế nhỉ.
-[30.22s -> 32.16s] Dạo gần đây tinh thần cũng không được tốt cho lắm.
-[32.16s -> 35.64s] Đau lưng mỏi gối, có lẽ là tu luyện xảy ra sơ sót rồi.
-[35.64s -> 37.58s] Hay là ra ngoài đi dạo cho khuây khỏa chút đi.
-[40.14s -> 42.50s] Không biết tại sao, hắn đường đường là đại tu sĩ kỳ Nguyên Anh...
-[42.50s -> 44.22s] ...lại cứ luôn che giấu tu vi.
-[44.22s -> 45.78s] Đến mức trong mắt người khác...
-[45.78s -> 48.44s] ...Mạnh Bất Tùng vẫn chỉ là một kẻ cố chấp kẹt ở Trúc Cơ suốt một ngàn năm...
-[48.44s -> 51.42s] ...với hình tượng phế vật tu tiên "không phá Kim Đan, thề không trở về".
-[51.42s -> 54.22s] Điều này khiến cho rất nhiều đồng môn bàn ra tán vào.
-[54.22s -> 56.62s] "Mạnh sư bá một ngàn năm rồi mà vẫn cứ là Trúc Cơ kỳ."
-[56.62s -> 59.38s] "Đại hạn của ổng lẽ ra đến từ lâu rồi, sao mãi không chết thế nhỉ?"
-[59.38s -> 62.16s] "Suỵt, sư huynh của ổng là Tông chủ đại nhân của chúng ta đấy."
-[62.16s -> 65.46s] "Chuẩn 'con ông cháu cha', chắc là được cho linh đan diệu dược gì rồi."
-[65.46s -> 66.62s] Đáng nhắc đến là...
-[66.62s -> 67.76s] ...trên lôi đài số 1.
-[68.02s -> 69.26s] Tráng hán mang Hỏa Linh Căn kia...
-[69.26s -> 71.38s] ...và cuộc so tài với thiếu nữ Lôi Linh Căn ngàn năm có một...
-[71.38s -> 72.86s] ...lại vô cùng đặc sắc.
-[72.86s -> 77.30s] Tu vi trác tuyệt...
-[77.30s -> 80.52s] ...các loại pháp bảo, pháp thuật tầng tầng lớp lớp tung ra không dứt.
-[80.52s -> 82.16s] Khiến người ta hoa cả mắt.
-[82.16s -> 84.04s] Cuối cùng, do công lực thiếu nữ còn non nớt...
-[84.04s -> 85.40s] ...nên đã thua kém một bậc.
-[85.40s -> 87.52s] Ngay lúc Mạnh Bất Tùng cảm thấy nhàm chán...
-[87.52s -> 89.06s] ...chuẩn bị "đả đạo hồi phủ" (đi về)...
-[89.06s -> 89.68s] Đột nhiên!
-[89.68s -> 92.57s] Vãi thật!
-[92.57s -> 94.41s] Đây không phải là mơ!
-[94.41s -> 101.17s] Kia là cái thứ quái quỷ gì vậy?
-[101.17s -> 102.83s] Sao có thể che khuất cả bầu trời thế kia? 
-[102.83s -> 104.35s] Một vuốt này mà giáng xuống... 
-[104.35s -> 105.45s] Là đi sạch sành sanh. 
-[105.93s -> 107.11s] Ta sống lại rồi? 
-[107.55s -> 109.43s] Hóa ra lần đầu không phải là mơ. 
-[109.43s -> 110.03s] Không đúng. 
-[110.03s -> 111.63s] Chắc chắn ta vẫn đang mơ. 
-[111.63s -> 115.01s] Trên đời làm gì có thứ kinh khủng khiếp đến thế chứ? 
-[115.01s -> 116.33s] Thứ này không chọc được.
-[116.33s -> 117.73s] Chẳng lẽ trốn cũng không xong?
-[117.73s -> 119.89s] Bổn Cẩu Vương chưa lên Đại Đế.
-[119.89s -> 123.06s] Không thể bỏ mạng ở chốn này.
-[123.06s -> 125.66s] Tông môn chắc đã chọc giận quái vật.
-[125.66s -> 127.62s] Gây thù sâu nặng thế nào...
-[127.62s -> 129.60s] Mới dẫn đến họa diệt tông.
-[129.60s -> 131.00s] Tông chủ đối đãi ta không tệ.
-[131.00s -> 132.32s] Nếu giờ ta chuồn đi...
-[132.32s -> 134.12s] Chẳng phải vong ân bội nghĩa sao?
-[134.12s -> 136.20s] Huống hồ mấy ngàn đệ tử.
-[136.20s -> 137.92s] Đều là tu sĩ bằng xương thịt.
-[137.92s -> 138.48s] Quá tàn nhẫn.
-[138.64s -> 140.56s] Để ta nói cho họ sự thật.
-[140.56s -> 141.96s] Không tin ta thì thôi.
-[141.96s -> 143.20s] Nếu tin ta...
-[143.20s -> 144.78s] Thì chạy được ai hay người nấy.
-[144.78s -> 147.26s] Đó chẳng phải Trường Thanh Trúc Cơ sao?
-[147.26s -> 148.92s] Sao độn tốc hắn nhanh vậy?
-[148.92s -> 149.32s] Khoan đã!
-[149.32s -> 151.30s] Đó là dao động Nguyên Anh kỳ!
-[151.30s -> 152.24s] Thâm tàng bất lộ!
-[152.24s -> 153.84s] Hóa ra là tiền bối Nguyên Anh.
-[153.84s -> 155.60s] Hắn "núp lùm" cả ngàn năm nay.
-[155.60s -> 156.80s] Đúng là giả heo ăn thịt hổ.
-[156.80s -> 158.24s] Định cướp ngôi Tông chủ đây mà.
-[158.24s -> 159.74s] Tiền bối, người đúng là "chó" thật!
-[159.74s -> 161.10s] Đại hội môn phái cũng phải nhịn.
-[161.10s -> 162.34s] Tông môn không phải mục tiêu.
-[162.34s -> 163.80s] Bí cảnh mới là đích đến.
-[163.80s -> 165.10s] Ta tưởng vị đạo hữu nào.
-[165.10s -> 166.20s] Hóa ra là sư đệ.
-[166.20s -> 167.44s] Đệ đắc đạo thành "Cẩu thánh" rồi.
-[167.44s -> 168.28s] Sư huynh!
-[168.28s -> 170.10s] Chắc còn hai nén hương nữa.
-[170.10s -> 171.10s] Huynh mau mang theo...
-[171.10s -> 172.76s] 19 bà vợ bé mà chạy đi!
-[172.76s -> 174.02s] Không được nói hàm hồ!
-[174.02s -> 175.63s] Lại đây... nói rõ xem nào.
-[175.63s -> 176.97s] Hai nén hương sau?
-[176.97s -> 178.67s] Là chuyện liên quan đến...
-[178.67s -> 180.21s] 19 bà vợ bé của ta hả?
-[180.21s -> 182.01s] Vợ cái đầu huynh ấy!
-[182.01s -> 183.27s] Sư huynh nghe này!
-[183.27s -> 184.91s] Đại họa sát nút rồi!
-[184.91s -> 186.13s] Có kẻ muốn diệt Thiên Vân Tông!
-[186.13s -> 188.13s] Sắp có vuốt thú giáng xuống.
-[188.13s -> 189.17s] Che khuất cả bầu trời!
-[189.17s -> 191.29s] Một tát san phẳng tông môn.
-[191.29s -> 192.31s] Tất cả sẽ chết!
-[192.31s -> 193.75s] Mau hạ Tông chủ lệnh!
-[193.75s -> 195.19s] Cho mọi người chạy hết đi!
-[195.19s -> 196.91s] Thiên Vân Tông mấy ngàn năm nay.
-[196.91s -> 197.93s] Xưa nay nổi danh hòa thiện.
-[197.93s -> 198.63s] Đâu ra đại địch...
-[198.63s -> 199.15s] Cỡ đó chứ?
-[199.15s -> 200.23s] Huống hồ thực lực tông môn...
-[200.23s -> 201.43s] Tông môn nhất nhì Ngũ Quốc.
-[201.43s -> 202.79s] Mà bị một vuốt diệt tông?
-[202.79s -> 204.15s] Đùa kiểu tông môn gì thế?
-[204.15s -> 204.63s] Sư Lệnh!
-[204.63s -> 206.15s] Ta có đóa Thiên Niên Băng Liên.
-[206.15s -> 207.59s] Vật ta giấu kín từ lâu.
-[207.59s -> 208.83s] Giúp tỉnh táo, tẩy não.
-[208.83s -> 209.59s] Hoạt huyết hóa ngọc.
-[209.59s -> 210.95s] Ta lấy tư cách cá nhân tài trợ.
-[210.95s -> 212.63s] Ngoài ra ngủ nhớ đắp chăn.
-[212.63s -> 213.31s] Đừng để cảm lạnh.
-[213.31s -> 214.59s] Bị coi thành thằng ngốc rồi.
-[214.59s -> 216.31s] Bản tôn phí thời gian chạy trốn.
-[216.31s -> 218.15s] Đổi lại chỉ nhận sự xa lánh.
-[218.15s -> 219.43s] Cái móng vuốt khổng lồ đó.
-[219.43s -> 220.71s] Giờ chạy cũng không kịp.
-[220.71s -> 222.03s] Bản tôn liều mạng quay lại.
-[222.03s -> 223.35s] Các người lại coi ta là trò cười.
-[223.35s -> 224.47s] Không tin ta chứ gì?
-[224.47s -> 226.11s] Hai nén hương sau sẽ thấy.
-[226.11s -> 227.83s] Hai nén hương trôi qua rồi.
-[227.83s -> 228.67s] Bên ngoài chẳng có gì cả.
-[228.67s -> 229.77s] Được rồi.
-[229.77s -> 230.39s] Mộng sư đệ.
-[230.39s -> 231.69s] Mau về nghỉ ngơi đi.
-[231.69s -> 233.01s] Rõ ràng là hai nén hương mà.
-[233.01s -> 234.21s] Không thể nào sai được.
-[234.21s -> 236.37s] Chẳng lẽ là "mộng trung mộng"?
-[236.37s -> 237.91s] Hay có đại năng tu sĩ nào...
-[237.91s -> 239.11s] Đã ra tay tập kích mình?
-[239.11s -> 241.92s] Vãi chưởng thật!
-[241.92s -> 243.66s] Dòng thời gian bị kéo dài rồi.
-[244.20s -> 244.70s] Tông chủ!
-[244.70s -> 246.66s] Ngon thì cho ta thêm hai nén hương.
-[247.20s -> 248.14s] Mắt thấy đám đông...
-[248.14s -> 249.80s] Đều mang vẻ mặt xem trò cười.
-[249.80s -> 250.88s] Mộng Bất Tùng nóng ruột.
-[250.88s -> 252.54s] Không ngừng hồi tưởng quá khứ.
-[252.54s -> 254.14s] Lôi đài số một.
-[254.14s -> 255.78s] Hỏa Linh Căn đấu Lôi Linh Căn.
-[255.78s -> 257.12s] Tráng sĩ kia thắng mới đúng.
-[257.12s -> 258.10s] Tông chủ nhìn kìa!
-[258.10s -> 258.64s] Lôi Linh Căn...
-[258.66s -> 259.62s] Thiếu nữ thắng rồi.
-[259.62s -> 260.74s] Hiệu ứng cánh bướm sao?
-[260.74s -> 262.78s] Cánh này quạt nhanh quá rồi.
-[262.78s -> 263.88s] Bỗng nhiên.
-[263.88s -> 265.36s] Gió ngừng thổi.
-[265.36s -> 267.00s] Trời tĩnh lặng.
-[267.00s -> 268.42s] Mọi thứ hóa tro bụi.
+[0.00s -> 1.00s] Ngươi tin không?
+[1.00s -> 2.20s] Thiếu niên này thê thảm cỡ nào?
+[2.20s -> 4.20s] Xuyên không mà chẳng có hệ thống.
+[4.20s -> 5.00s] Cũng chả có Nhẫn Thần.
+[5.00s -> 7.00s] Khổ tu cả ngàn năm.
+[7.00s -> 8.00s] Mới lên được Nguyên Anh kỳ.
+[8.00s -> 10.00s] Lại gặp họa sát thân.
+[10.00s -> 11.00s] Chết ngay trước đại nạn diệt thế.
+[17.00s -> 17.60s] Được!
+[17.60s -> 19.00s] Lần này cấm được do dự!
+[19.00s -> 20.80s] Tử đạo hữu, bất tử bần đạo!
+[20.80s -> 22.40s] Mạng kẻ khác can hệ gì ta!
+[25.80s -> 26.80s] Kẻ nào?
+[26.80s -> 28.60s] Lén lút vào tông ta có đồ mưu gì?
+[28.60s -> 30.20s] Bóng lưng này... giống Mộng sư điệt?
+[30.20s -> 32.20s] Hắn mới Trúc Cơ kỳ thôi mà?
+[32.20s -> 32.80s] Hắn...
+[32.80s -> 33.80s] Ngô lão đầu!
+[33.80s -> 35.80s] Đồ đệ ngươi giấu nghề giỏi thật!
+[35.80s -> 38.20s] Thiên Vân Tông quả nhiên giấu Hóa Thần đại năng!
+[38.20s -> 40.00s] Mấy luồng khí tức này quen lắm.
+[40.00s -> 42.20s] Chắc là mấy lão tiền bối giả chết năm xưa.
+[42.20s -> 44.60s] Mấy lão già này còn "chó" hơn cả Bổn tôn!
+[45.40s -> 46.60s] Giấu thì có ích gì?
+[46.60s -> 48.40s] Cũng bị một chưởng đập chết thôi.
+[48.40s -> 50.80s] Khí thế móng vuốt kia vượt xa Hóa Thần!
+[50.80s -> 53.20s] Trên đường tháo chạy, đầu óc Mộng Bất Tùng...
+[53.20s -> 54.40s] ...cuối cùng cũng bình tĩnh lại.
+[54.40s -> 56.00s] Ta quả nhiên có thể hồi sinh!
+[56.00s -> 57.80s] Mốc thời gian cũng lùi lại rồi.
+[58.00s -> 59.80s] Lần đầu chết, ta đang ở Động phủ.
+[59.80s -> 61.40s] Không rõ tình hình và thời gian.
+[61.40s -> 64.20s] Lần hai, chết sau Đại bỉ tông môn hai nén hương.
+[64.20s -> 65.80s] Tức là khoảng giữa trưa.
+[65.80s -> 68.40s] Lúc sống lại cách giờ Ngọ khoảng một canh giờ.
+[68.40s -> 70.80s] Lần ba, chết ngay tại đại điện tông môn.
+[70.80s -> 72.60s] Đã qua khoảng một canh giờ.
+[72.60s -> 73.80s] Chính là giờ Tỵ.
+[73.80s -> 75.60s] Còn lúc này hẳn là giờ Thìn.
+[75.60s -> 78.00s] Quy luật thời gian lùi lại mỗi lần một canh giờ.
+[78.00s -> 80.40s] Nói hươu nói vượn khuyên can Tông chủ...
+[80.40s -> 82.20s] ...đặt vào ta, ta cũng chả tin.
+[82.20s -> 83.80s] Đại bỉ tông môn sắp tới.
+[83.80s -> 85.60s] Tông chủ không tát cho một cái...
+[85.60s -> 87.80s] ...mắng ta "yêu ngôn hoặc chúng" là còn may chán!
+[87.80s -> 89.20s] Kệ xác tông môn đi.
+[89.20s -> 90.40s] Mệnh ai nấy lo.
+[90.40s -> 91.60s] Chuồn là thượng sách!
+[115.60s -> 122.60s] Tu Đạo...
+[122.60s -> 124.60s] Tu Đạo...
+[124.60s -> 125.60s] Tham vọng quá...
+[125.60s -> 126.60s] Mà quên mất gốc.
+[126.60s -> 127.60s] Cảm thán một lát.
+[127.60s -> 129.60s] Lập tức khôi phục đạo tâm.
+[129.60s -> 131.60s] Họa sinh tử còn đó.
+[131.60s -> 132.60s] Rảnh đâu mà cảm thán!
+[132.60s -> 134.60s] Giờ Ngọ đã điểm.
+[134.60s -> 135.60s] Tĩnh quan kỳ biến.
+[135.60s -> 136.60s] Thời khắc đến gần.
+[136.60s -> 138.60s] Mộng Bất Tùng nhìn chằm chằm bầu trời.
+[138.60s -> 140.60s] Tiếc là sự đời trớ trêu.
+[140.60s -> 141.60s] Bất thình lình!
+[141.60s -> 142.60s] Trời bị phong ấn!
+[142.60s -> 143.60s] Tận thế rồi.
+[143.60s -> 145.60s] Thần uy quen thuộc lại đến!
+[149.60s -> 150.60s] Chạy xa thế này...
+[150.60s -> 151.60s] ...vẫn không thoát sao?
+[151.60s -> 153.60s] Phạm vi Cự trảo này lớn thật.
+[153.60s -> 155.60s] Mục tiêu không chỉ là Thiên Vân Tông.
+[155.60s -> 156.60s] Mà là cả Vũ Quốc.
+[156.60s -> 158.60s] Rốt cuộc là thế lực phương nào?
+[158.60s -> 159.60s] Thủ đoạn tàn độc như vậy!
+[159.60s -> 161.60s] Diệt sạch tu sĩ Vũ Quốc...
+[161.60s -> 162.60s] ...cùng hàng vạn phàm nhân.
+[162.60s -> 163.60s] Tổn hại thiên hòa!
+[163.60s -> 165.60s] Quá tàn nhẫn rồi!
+[165.60s -> 166.60s] Lại là đêm khuya?
+[166.60s -> 167.60s] Giờ Sửu.
+[167.60s -> 169.60s] Lùi lại ba canh giờ.
+[169.60s -> 171.60s] Hồi tố thời gian chẳng có quy luật gì.
+[171.60s -> 173.60s] Nhưng ít nhất mốc hồi sinh...
+[173.60s -> 174.60s] ...đang kéo dài về trước.
+[174.60s -> 176.60s] Giúp Mộng Bất Tùng đủ giờ bỏ trốn.
+[176.60s -> 178.60s] Coi như là tin tốt duy nhất.
+[178.60s -> 180.60s] Phải chạy!
+[180.60s -> 181.60s] Chạy càng xa càng tốt!
+[181.60s -> 182.60s] Thoát khỏi cục diện này.
+[182.60s -> 183.60s] Chết chả dễ chịu gì.
+[183.60s -> 185.60s] Nhất là với kẻ tiếc mạng như hắn.
+[186.60s -> 187.60s] Hoang Cốc...
+[187.60s -> 189.60s] Hắn nhanh chóng định hướng chạy trốn.
+[189.60s -> 191.60s] Bắc Vũ Quốc giáp Thiên Lý Băng Nguyên.
+[191.60s -> 192.60s] Nam giáp Vô Biên Hải Vực.
+[192.60s -> 194.60s] Phía Đông là 72 Quận.
+[194.60s -> 195.60s] Phạm vi quá rộng.
+[195.60s -> 197.60s] Còn phía Tây là Hoang Cổ Sâm Lâm.
+[197.60s -> 199.60s] Là đường thoát khỏi Vũ Quốc nhanh nhất.
+[199.60s -> 200.60s] Chỉ là Hoang Cổ Sâm Lâm...
+[200.60s -> 202.60s] ...quá nhiều yêu thú.
+[202.60s -> 204.60s] Không thiếu yêu thú Hóa Thần Kỳ.
+[204.60s -> 205.60s] Lại thêm lời đồn...
+[205.60s -> 207.60s] ...tu sĩ vào đó thập tử nhất sinh.
+[207.60s -> 208.60s] Chớp mắt.
+[208.60s -> 210.60s] Mộng Bất Tùng vào rừng đã mấy canh giờ.
+[210.60s -> 211.60s] (Đoạn này đã gộp ý vào câu trên để đủ thời gian).
+[211.60s -> 213.60s] Nhưng chuyến này xui xẻo tột cùng.
+[213.60s -> 215.60s] Hoang Cổ đại yêu hoành hành.
+[215.60s -> 217.60s] Ngay cả con nhện to bằng bàn tay...
+[217.60s -> 218.60s] ...cũng có tu vi.
+[218.60s -> 220.60s] Nhưng độc chướng tứ bề...
+[220.60s -> 223.60s] Độc chướng xanh đen ban đầu không làm hắn chú ý.
+[223.60s -> 225.60s] Khiến hắn chẳng thèm bật hộ thể chân khí.
+[225.60s -> 228.60s] Ngờ đâu độc khí liên tục kích thích thần kinh.
+[228.60s -> 230.60s] Đợi lúc phản ứng lại...
+[230.60s -> 232.60s] ...đã bệnh nguy kịch rồi.
+[232.60s -> 234.60s] Là độc khí!
+[235.60s -> 237.60s] Tuy lần này lại chết...
+[237.60s -> 239.60s] ...nhưng cũng có thu hoạch.
+[239.60s -> 241.60s] Ít nhất biết được, không phải do Cự trảo giết...
+[241.60s -> 242.60s] ...cũng có thể hồi tố thời gian.
+[242.60s -> 245.60s] Xem ra Mộng Bất Tùng đã rơi vào vòng lặp thời gian.
+[245.60s -> 247.60s] Còn nguyên nhân cụ thể do đâu...
+[247.60s -> 249.60s] ...hắn chịu chết không hiểu.

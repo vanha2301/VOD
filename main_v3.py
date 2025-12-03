@@ -10,6 +10,8 @@ import nest_asyncio
 import re
 import edge_tts
 import time
+import yt_dlp
+import whisper
 
 nest_asyncio.apply()
 
@@ -33,17 +35,12 @@ class ModernProgressBar(tk.Canvas):
                                      fill='white', font=('Segoe UI', 11, 'bold'))
     
     def set_progress(self, value):
-        """Set progress (0-100)"""
         self.progress = max(0, min(100, value))
         bar_width = (self.width * self.progress) / 100
         
-        # Color changes based on progress
-        if self.progress < 30:
-            color = '#e74c3c'
-        elif self.progress < 70:
-            color = '#f39c12'
-        else:
-            color = '#27ae60'
+        if self.progress < 30: color = '#e74c3c'
+        elif self.progress < 70: color = '#f39c12'
+        else: color = '#27ae60'
         
         self.coords(self.bar, 0, 0, bar_width, self.height)
         self.itemconfig(self.bar, fill=color)
@@ -54,19 +51,14 @@ class AutoDubberApp:
     def __init__(self, root):
         self.root = root
         self.root.title("✨ Auto AI Dubbing Tool - Professional Edition")
-        self.root.geometry("850x850")
+        self.root.geometry("850x950") 
         self.root.resizable(True, True)
         self.root.minsize(850, 700)
         
-        # Modern color scheme
         self.colors = {
-            'bg': '#1e272e',
-            'card': '#2c3e50',
-            'accent': '#3498db',
-            'success': '#27ae60',
-            'danger': '#e74c3c',
-            'text': '#ecf0f1',
-            'text_dark': '#95a5a6'
+            'bg': '#1e272e', 'card': '#2c3e50', 'accent': '#3498db',
+            'success': '#27ae60', 'danger': '#e74c3c', 'text': '#ecf0f1', 'text_dark': '#95a5a6',
+            'warning': '#f39c12'
         }
         
         self.root.configure(bg=self.colors['bg'])
@@ -74,10 +66,8 @@ class AutoDubberApp:
         # --- Variables ---
         self.video_path = tk.StringVar()
         self.script_path = tk.StringVar()
-        self.status_var = tk.StringVar(value="Sẵn sàng để bắt đầu...")
-        self.progress_var = tk.DoubleVar(value=0.0)
-        self.processed_count = tk.IntVar(value=0)
-        self.total_count = tk.IntVar(value=0)
+        self.status_var = tk.StringVar(value="Sẵn sàng...")
+        self.url_var = tk.StringVar()
         
         self.ffmpeg_path = self._find_tool("ffmpeg")
         self.ffprobe_path = self._find_tool("ffprobe")
@@ -90,183 +80,143 @@ class AutoDubberApp:
     
     def _find_tool(self, tool_name):
         path = shutil.which(tool_name)
-        if path:
-            return path
+        if path: return path
         possible_paths = [
             rf"C:\ffmpeg\bin\{tool_name}.exe",
             rf"D:\ffmpeg\bin\{tool_name}.exe",
             os.path.expandvars(rf"%LOCALAPPDATA%\Microsoft\WinGet\Links\{tool_name}.exe")
         ]
         for p in possible_paths:
-            if os.path.exists(p):
-                return p
+            if os.path.exists(p): return p
         return None
     
-    def create_card_frame(self, parent, title):
-        """Create a modern card-style frame"""
+    def create_card_frame(self, parent, title, color_theme=None):
+        if color_theme is None: color_theme = self.colors['accent']
+        
         frame = tk.Frame(parent, bg=self.colors['card'], relief=tk.FLAT)
         frame.pack(fill="x", padx=20, pady=8)
         
-        # Title bar
-        title_frame = tk.Frame(frame, bg=self.colors['accent'], height=35)
+        title_frame = tk.Frame(frame, bg=color_theme, height=35)
         title_frame.pack(fill="x")
         title_frame.pack_propagate(False)
         
-        tk.Label(title_frame, text=title, bg=self.colors['accent'], 
+        tk.Label(title_frame, text=title, bg=color_theme, 
                 fg='white', font=('Segoe UI', 10, 'bold')).pack(side="left", padx=15, pady=6)
         
-        # Content area
         content = tk.Frame(frame, bg=self.colors['card'])
         content.pack(fill="both", expand=True, padx=15, pady=12)
-        
         return content
     
     def create_modern_widgets(self):
-        # Main container
         main_container = tk.Frame(self.root, bg=self.colors['bg'])
         main_container.pack(fill="both", expand=True)
         
-        # ========== HEADER ==========
-        header = tk.Frame(main_container, bg=self.colors['accent'], height=65)
+        # HEADER
+        header = tk.Frame(main_container, bg=self.colors['accent'], height=60)
         header.pack(fill="x")
         header.pack_propagate(False)
-        
-        tk.Label(header, text="🎬 AUTO AI DUBBING STUDIO", 
-                bg=self.colors['accent'], fg='white',
-                font=('Segoe UI', 18, 'bold')).pack(pady=20)
-        
-        # ========== 1. VIDEO INPUT CARD ==========
-        video_content = self.create_card_frame(main_container, "📹  Video Gốc")
+        tk.Label(header, text="🎬 AUTO AI DUBBING STUDIO", bg=self.colors['accent'], fg='white', font=('Segoe UI', 16, 'bold')).pack(pady=15)
+          
+        # ==================== 1. VIDEO INPUT ====================
+        video_content = self.create_card_frame(main_container, "1️⃣  Video Gốc (Input)")
         
         input_frame = tk.Frame(video_content, bg=self.colors['card'])
-        input_frame.pack(fill="x")
+        input_frame.pack(fill="x", pady=(0, 5))
         
-        self.video_entry = tk.Entry(input_frame, textvariable=self.video_path, 
-                                    font=('Segoe UI', 10), bg='#34495e', fg='white',
-                                    relief=tk.FLAT, insertbackground='white')
-        self.video_entry.pack(side="left", fill="x", expand=True, ipady=8, padx=(0, 10))
+        file_box = tk.Frame(input_frame, bg=self.colors['card'])
+        file_box.pack(fill="x")
+
+        self.video_entry = tk.Entry(file_box, textvariable=self.video_path, font=('Segoe UI', 10), bg='#34495e', fg='white', relief=tk.FLAT, insertbackground='white')
+        self.video_entry.pack(side="left", fill="x", expand=True, ipady=5, padx=(0, 10))
         
-        btn_video = tk.Button(input_frame, text="📂 Chọn Video", command=self.browse_video,
-                             bg=self.colors['accent'], fg='white', font=('Segoe UI', 10, 'bold'),
-                             relief=tk.FLAT, cursor='hand2', padx=20, pady=8)
-        btn_video.pack(side="right")
+        tk.Button(file_box, text="📂 Chọn File", command=self.browse_video, bg='#7f8c8d', fg='white', font=('Segoe UI', 9, 'bold'), relief=tk.FLAT, padx=15, pady=4).pack(side="right")
+
+        # Youtube Download
+        separator = tk.Frame(video_content, bg='#95a5a6', height=1)
+        separator.pack(fill="x", pady=10)
+        yt_box = tk.Frame(video_content, bg=self.colors['card'])
+        yt_box.pack(fill="x")
+        self.url_entry = tk.Entry(yt_box, textvariable=self.url_var, font=('Segoe UI', 10), bg='#34495e', fg='white', relief=tk.FLAT, insertbackground='white')
+        self.url_entry.pack(side="left", fill="x", expand=True, ipady=5, padx=(0, 10))
         
-        # ========== 2. SCRIPT INPUT CARD ==========
-        script_content = self.create_card_frame(main_container, "📄  Kịch Bản")
+        self.btn_download = tk.Button(yt_box, text="⬇️ Tải Video", command=self.start_download_thread, bg='#c0392b', fg='white', font=('Segoe UI', 9, 'bold'), relief=tk.FLAT, padx=15, pady=4)
+        self.btn_download.pack(side="right")
+        
+        # ==================== 2. WHISPER EXTRACT (RIÊNG BIỆT) ====================
+        whisper_content = self.create_card_frame(main_container, "2️⃣  Tách Lời Thoại (Whisper - Tạo Raw Text)", color_theme='#8e44ad')
+        
+        w_frame = tk.Frame(whisper_content, bg=self.colors['card'])
+        w_frame.pack(fill="x")
+        
+        # Hướng dẫn
+        lbl_guide = tk.Label(w_frame, text="💡 Dùng tính năng này để lấy text gốc, sau đó bạn tự dịch file text và nạp vào bước 3.", 
+                             bg=self.colors['card'], fg='#bdc3c7', font=('Segoe UI', 9, 'italic'), justify="left")
+        lbl_guide.pack(anchor="w", pady=(0, 10))
+        
+        self.btn_whisper = tk.Button(w_frame, text="🎙️ Trích Xuất Văn Bản Gốc", command=self.start_whisper_thread, 
+                                     bg='#8e44ad', fg='white', font=('Segoe UI', 10, 'bold'), relief=tk.FLAT, width=30)
+        self.btn_whisper.pack(anchor="center", ipady=5)
+
+        # ==================== 3. SCRIPT INPUT ====================
+        script_content = self.create_card_frame(main_container, "3️⃣  Kịch Bản Đã Dịch (Vietnamese)", color_theme=self.colors['accent'])
         
         script_frame = tk.Frame(script_content, bg=self.colors['card'])
         script_frame.pack(fill="x")
         
-        self.script_entry = tk.Entry(script_frame, textvariable=self.script_path,
-                                     font=('Segoe UI', 10), bg='#34495e', fg='white',
-                                     relief=tk.FLAT, insertbackground='white')
+        self.script_entry = tk.Entry(script_frame, textvariable=self.script_path, font=('Segoe UI', 10), bg='#34495e', fg='white', relief=tk.FLAT, insertbackground='white')
         self.script_entry.pack(side="left", fill="x", expand=True, ipady=8, padx=(0, 10))
         
-        btn_script = tk.Button(script_frame, text="📄 Chọn Script", command=self.browse_script,
-                              bg=self.colors['accent'], fg='white', font=('Segoe UI', 10, 'bold'),
-                              relief=tk.FLAT, cursor='hand2', padx=20, pady=8)
-        btn_script.pack(side="right")
+        # Chỉ còn nút Browse
+        tk.Button(script_frame, text="📄 Chọn Script (Đã dịch)", command=self.browse_script, bg=self.colors['accent'], fg='white', font=('Segoe UI', 10, 'bold'), relief=tk.FLAT, padx=20, pady=8).pack(side="right")
         
-        # ========== 3. MIXER CONTROL CARD ==========
-        mixer_content = self.create_card_frame(main_container, "🎚️  Điều Chỉnh Âm Lượng")
+        # ==================== 4. MIXER & PROGRESS ====================
+        mixer_content = self.create_card_frame(main_container, "4️⃣  Cấu Hình & Xử Lý")
+        
+        # Sliders
+        sliders_frame = tk.Frame(mixer_content, bg=self.colors['card'])
+        sliders_frame.pack(fill="x")
         
         # Video Volume
-        vol_video_frame = tk.Frame(mixer_content, bg=self.colors['card'])
-        vol_video_frame.pack(fill="x", pady=3)
-        
-        tk.Label(vol_video_frame, text="🔊 Video Gốc:", bg=self.colors['card'],
-                fg=self.colors['text'], font=('Segoe UI', 10)).pack(side="left", padx=(0, 10))
-        
-        self.vol_video_slider = tk.Scale(vol_video_frame, from_=0, to=200, orient="horizontal",
-                                         bg=self.colors['card'], fg=self.colors['text'],
-                                         highlightthickness=0, troughcolor='#34495e',
-                                         activebackground=self.colors['accent'], length=300)
+        v_frame = tk.Frame(sliders_frame, bg=self.colors['card'])
+        v_frame.pack(fill="x", pady=2)
+        tk.Label(v_frame, text="Video Gốc:", bg=self.colors['card'], fg='white', width=10, anchor='w').pack(side="left")
+        self.vol_video_slider = tk.Scale(v_frame, from_=0, to=200, orient="horizontal", bg=self.colors['card'], fg='white', highlightthickness=0, troughcolor='#34495e', activebackground=self.colors['accent'], length=250)
         self.vol_video_slider.set(20)
-        self.vol_video_slider.pack(side="left", padx=5)
-        
-        self.lbl_vol_video = tk.Label(vol_video_frame, text="20%", bg=self.colors['card'],
-                                      fg=self.colors['accent'], font=('Segoe UI', 10, 'bold'),
-                                      width=5)
-        self.lbl_vol_video.pack(side="left", padx=10)
-        self.vol_video_slider.config(command=lambda v: self.lbl_vol_video.config(text=f"{int(float(v))}%"))
-        
-        # AI Voice Volume
-        vol_ai_frame = tk.Frame(mixer_content, bg=self.colors['card'])
-        vol_ai_frame.pack(fill="x", pady=3)
-        
-        tk.Label(vol_ai_frame, text="🎤 AI Voice:  ", bg=self.colors['card'],
-                fg=self.colors['text'], font=('Segoe UI', 10)).pack(side="left", padx=(0, 10))
-        
-        self.vol_ai_slider = tk.Scale(vol_ai_frame, from_=0, to=200, orient="horizontal",
-                                      bg=self.colors['card'], fg=self.colors['text'],
-                                      highlightthickness=0, troughcolor='#34495e',
-                                      activebackground=self.colors['success'], length=300)
+        self.vol_video_slider.pack(side="left")
+
+        # AI Volume
+        a_frame = tk.Frame(sliders_frame, bg=self.colors['card'])
+        a_frame.pack(fill="x", pady=2)
+        tk.Label(a_frame, text="AI Voice:", bg=self.colors['card'], fg='white', width=10, anchor='w').pack(side="left")
+        self.vol_ai_slider = tk.Scale(a_frame, from_=0, to=200, orient="horizontal", bg=self.colors['card'], fg='white', highlightthickness=0, troughcolor='#34495e', activebackground=self.colors['success'], length=250)
         self.vol_ai_slider.set(150)
-        self.vol_ai_slider.pack(side="left", padx=5)
-        
-        self.lbl_vol_ai = tk.Label(vol_ai_frame, text="150%", bg=self.colors['card'],
-                                   fg=self.colors['success'], font=('Segoe UI', 10, 'bold'),
-                                   width=5)
-        self.lbl_vol_ai.pack(side="left", padx=10)
-        self.vol_ai_slider.config(command=lambda v: self.lbl_vol_ai.config(text=f"{int(float(v))}%"))
-        
-        # ========== 4. PROGRESS SECTION ==========
-        progress_card = tk.Frame(main_container, bg=self.colors['card'], relief=tk.FLAT)
-        progress_card.pack(fill="x", padx=20, pady=8)
-        
-        prog_inner = tk.Frame(progress_card, bg=self.colors['card'])
-        prog_inner.pack(fill="x", padx=15, pady=12)
-        
-        # Status counter
-        counter_frame = tk.Frame(prog_inner, bg=self.colors['card'])
-        counter_frame.pack(fill="x", pady=(0, 8))
-        
-        tk.Label(counter_frame, text="Tiến Độ Xử Lý:", bg=self.colors['card'],
-                fg=self.colors['text'], font=('Segoe UI', 11, 'bold')).pack(side="left")
-        
-        self.lbl_counter = tk.Label(counter_frame, text="0 / 0 câu", bg=self.colors['card'],
-                                    fg=self.colors['accent'], font=('Segoe UI', 11, 'bold'))
-        self.lbl_counter.pack(side="right")
-        
-        # Modern progress bar
-        self.progress_bar = ModernProgressBar(prog_inner, width=760, height=32)
-        self.progress_bar.pack(pady=8)
-        
-        # ========== 5. LOGS ==========
-        log_content = self.create_card_frame(main_container, "📋  Nhật Ký Hoạt Động")
-        
-        self.log_area = scrolledtext.ScrolledText(log_content, height=6, state='disabled',
-                                                  font=('Consolas', 9), bg='#1e272e',
-                                                  fg='#2ecc71', insertbackground='white',
-                                                  relief=tk.FLAT)
+        self.vol_ai_slider.pack(side="left")
+
+        # Progress
+        tk.Frame(mixer_content, height=1, bg='#7f8c8d').pack(fill="x", pady=15) # Line
+        self.progress_bar = ModernProgressBar(mixer_content, width=760, height=25)
+        self.progress_bar.pack(pady=5)
+        self.lbl_counter = tk.Label(mixer_content, text="0/0", bg=self.colors['card'], fg='white')
+        self.lbl_counter.pack()
+
+        # Logs
+        log_content = self.create_card_frame(main_container, "📋  Logs")
+        self.log_area = scrolledtext.ScrolledText(log_content, height=5, state='disabled', font=('Consolas', 9), bg='#1e272e', fg='#2ecc71', relief=tk.FLAT)
         self.log_area.pack(fill="both", expand=True)
         
-        # ========== 6. ACTION BUTTON ==========
+        # Run Button
         btn_frame = tk.Frame(main_container, bg=self.colors['bg'])
         btn_frame.pack(fill="x", padx=20, pady=10)
+        self.btn_run = tk.Button(btn_frame, text="🚀 BẮT ĐẦU LỒNG TIẾNG (BƯỚC 4)", command=self.start_processing_flow, bg=self.colors['success'], fg='white', font=('Segoe UI', 12, 'bold'), relief=tk.FLAT, cursor='hand2', height=2)
+        self.btn_run.pack(fill="x")
         
-        self.btn_run = tk.Button(btn_frame, text="🚀 BẮT ĐẦU XỬ LÝ",
-                                command=self.start_processing_flow,
-                                bg=self.colors['success'], fg='white',
-                                font=('Segoe UI', 13, 'bold'),
-                                relief=tk.FLAT, cursor='hand2',
-                                height=2)
-        self.btn_run.pack(fill="x", ipady=8)
-        
-        # ========== 7. STATUS BAR ==========
-        status_bar = tk.Frame(main_container, bg=self.colors['card'], height=35)
+        # Status Bar
+        status_bar = tk.Frame(main_container, bg=self.colors['card'], height=30)
         status_bar.pack(side="bottom", fill="x")
-        status_bar.pack_propagate(False)
-        
-        self.lbl_status = tk.Label(status_bar, textvariable=self.status_var,
-                                   bg=self.colors['card'], fg=self.colors['text_dark'],
-                                   font=('Segoe UI', 9), anchor="w")
-        self.lbl_status.pack(side="left", padx=15, fill="x", expand=True)
-        
-        # Version label
-        tk.Label(status_bar, text="v2.0 Pro", bg=self.colors['card'],
-                fg=self.colors['text_dark'], font=('Segoe UI', 8)).pack(side="right", padx=15)
+        self.lbl_status = tk.Label(status_bar, textvariable=self.status_var, bg=self.colors['card'], fg=self.colors['text_dark'], font=('Segoe UI', 9), anchor="w")
+        self.lbl_status.pack(side="left", padx=15)
     
+    # --- HELPER FUNCTIONS ---
     def log(self, message):
         self.log_area.config(state='normal')
         timestamp = time.strftime('%H:%M:%S')
@@ -276,13 +226,10 @@ class AutoDubberApp:
     
     def update_progress(self, percent, status_text=None):
         self.progress_bar.set_progress(percent)
-        if status_text:
-            self.status_var.set(status_text)
+        if status_text: self.status_var.set(status_text)
         self.root.update_idletasks()
-    
+        
     def update_counter(self, current, total):
-        self.processed_count.set(current)
-        self.total_count.set(total)
         self.lbl_counter.config(text=f"{current} / {total} câu")
         self.root.update_idletasks()
     
@@ -296,21 +243,81 @@ class AutoDubberApp:
         path = filedialog.askopenfilename(filetypes=[("Text", "*.txt")])
         if path:
             self.script_path.set(path)
-            self.log(f"✓ Đã chọn script: {os.path.basename(path)}")
-    
-    def start_processing_flow(self):
-        if not self.video_path.get() or not self.script_path.get():
-            messagebox.showwarning("⚠️ Thiếu thông tin", 
-                                 "Vui lòng chọn Video và Script!")
+            self.log(f"✓ Đã chọn script lồng tiếng: {os.path.basename(path)}")
+
+    # ==========================================================================
+    # 🎙️ WHISPER LOGIC (ĐÃ TÁCH RIÊNG)
+    # ==========================================================================
+    def start_whisper_thread(self):
+        video_file = self.video_path.get()
+        if not video_file or not os.path.exists(video_file):
+            messagebox.showwarning("Thiếu Video", "Vui lòng chọn Video ở Bước 1 trước!")
             return
         
-        output_path = filedialog.asksaveasfilename(
-            defaultextension=".mp4",
-            filetypes=[("MP4", "*.mp4")],
-            initialfile="Dubbed_Video_Pro.mp4"
+        # Hỏi nơi lưu file RAW (chưa dịch)
+        save_path = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[("Text File", "*.txt")],
+            initialfile=f"raw_script_original.txt",
+            title="Lưu file text gốc ở đâu?"
         )
-        if not output_path:
+        if not save_path:
             return
+
+        self.btn_whisper.config(state="disabled", text="⏳ Đang phân tích...", bg='#7f8c8d')
+        threading.Thread(target=self.process_whisper_generation, args=(video_file, save_path), daemon=True).start()
+
+    def process_whisper_generation(self, video_path, save_path):
+        try:
+            self.log("=" * 40)
+            self.log("🎙️ BẮT ĐẦU TÁCH LỜI THOẠI (WHISPER)")
+            self.status_var.set("⏳ Đang tải model & xử lý audio...")
+            
+            # Load Model
+            model = whisper.load_model("base") # Dùng base cho nhanh
+            self.log("✓ Model loaded. Transcribing...")
+            
+            # Transcribe
+            result = model.transcribe(video_path, fp16=False) 
+            segments = result['segments']
+            self.log(f"✓ Tìm thấy {len(segments)} đoạn hội thoại.")
+
+            # Lưu file: Vẫn giữ format [time] text để sau này dùng lại được
+            with open(save_path, "w", encoding="utf-8") as f:
+                for seg in segments:
+                    start_time = seg['start']
+                    end_time = seg['end']
+                    text = seg['text'].strip()
+                    # Format chuẩn để app đọc được sau khi dịch
+                    line = f"[{start_time:.2f}s -> {end_time:.2f}s] {text}\n"
+                    f.write(line)
+            
+            self.root.after(0, lambda: self.log(f"✅ Đã xuất file thô: {save_path}"))
+            
+            msg = (f"Đã tách lời thoại thành công!\n\n"
+                   f"File lưu tại: {save_path}\n\n"
+                   f"👉 BƯỚC TIẾP THEO: Hãy mở file này lên, dịch nội dung sang tiếng Việt (giữ nguyên timecode [...]), "
+                   f"sau đó chọn file đã dịch ở mục '3. Kịch Bản'.")
+            
+            self.root.after(0, lambda: messagebox.showinfo("Hoàn thành trích xuất", msg))
+
+        except Exception as e:
+            self.root.after(0, lambda: self.log(f"❌ WHISPER ERROR: {str(e)}"))
+            self.root.after(0, lambda: messagebox.showerror("Lỗi", str(e)))
+        finally:
+            self.root.after(0, lambda: self.btn_whisper.config(state="normal", text="🎙️ Trích Xuất Văn Bản Gốc", bg='#8e44ad'))
+            self.root.after(0, lambda: self.status_var.set("Sẵn sàng..."))
+
+    # ==========================================================================
+    # CORE PIPELINE (DUBBING)
+    # ==========================================================================
+    def start_processing_flow(self):
+        if not self.video_path.get() or not self.script_path.get():
+            messagebox.showwarning("⚠️ Thiếu thông tin", "Vui lòng làm xong Bước 1 và Bước 3!")
+            return
+        
+        output_path = filedialog.asksaveasfilename(defaultextension=".mp4", filetypes=[("MP4", "*.mp4")], initialfile="Dubbed_Video_Final.mp4")
+        if not output_path: return
         
         self.btn_run.config(state="disabled", bg='#95a5a6')
         self.progress_bar.set_progress(0)
@@ -321,19 +328,16 @@ class AutoDubberApp:
     def process_pipeline(self, output_path):
         try:
             self.log("=" * 60)
-            self.log("🎬 BẮT ĐẦU PIPELINE XỬ LÝ (STRICT MODE)")
-            self.log("=" * 60)
+            self.log("🎬 BẮT ĐẦU LỒNG TIẾNG")
             
             abs_temp = os.path.abspath(TEMP_FOLDER)
-            if os.path.exists(abs_temp):
-                shutil.rmtree(abs_temp)
+            if os.path.exists(abs_temp): shutil.rmtree(abs_temp)
             os.makedirs(abs_temp)
             
-            # 1. Đọc Script
-            self.update_progress(5, "🔄 Đang đọc kịch bản...")
+            # 1. Đọc Script (File đã dịch)
+            self.update_progress(5, "🔄 Đang đọc script tiếng Việt...")
             subtitles = self.read_script_file(self.script_path.get())
-            if not subtitles:
-                raise Exception("Script rỗng!")
+            if not subtitles: raise Exception("Script rỗng hoặc sai định dạng!")
             
             self.log(f"✓ Đã nạp {len(subtitles)} câu thoại")
             self.update_counter(0, len(subtitles))
@@ -343,33 +347,24 @@ class AutoDubberApp:
             self.create_tts_track(subtitles, full_audio_path, abs_temp)
             
             # 3. Mix Video
-            self.update_progress(80, "🎥 Đang render video cuối cùng...")
-            self.log("🎬 Bắt đầu ghép video...")
+            self.update_progress(80, "🎥 Đang ghép video...")
             self.mix_video_audio(self.video_path.get(), full_audio_path, output_path)
             
             # 4. Finish
-            self.update_progress(100, "✅ Hoàn thành!")
-            self.log("=" * 60)
-            self.log(f"✅ OUTPUT SAVED: {output_path}")
-            self.log("=" * 60)
+            self.update_progress(100, "✅ Xong!")
+            self.log(f"✅ FILE: {output_path}")
             
-            messagebox.showinfo("🎉 Thành công", 
-                              "Video đã được xử lý hoàn tất!\n\nẤn OK để mở file.")
-            
+            messagebox.showinfo("Thành công", "Video đã lồng tiếng xong!")
             if os.name == 'nt':
-                try:
-                    os.startfile(output_path)
-                except:
-                    pass
+                try: os.startfile(output_path)
+                except: pass
                     
         except Exception as e:
             self.log(f"❌ ERROR: {str(e)}")
-            messagebox.showerror("❌ Lỗi", str(e))
+            messagebox.showerror("Lỗi", str(e))
         finally:
-            if os.path.exists(TEMP_FOLDER):
-                shutil.rmtree(TEMP_FOLDER, ignore_errors=True)
-            self.root.after(0, lambda: self.btn_run.config(state="normal", 
-                                                          bg=self.colors['success']))
+            if os.path.exists(TEMP_FOLDER): shutil.rmtree(TEMP_FOLDER, ignore_errors=True)
+            self.root.after(0, lambda: self.btn_run.config(state="normal", bg=self.colors['success']))
     
     def read_script_file(self, file_path):
         data = []
@@ -387,80 +382,52 @@ class AutoDubberApp:
         return data
     
     async def _generate_clip(self, text, filename, rate_str="+0%"):
-        communicate = edge_tts.Communicate(text, GIONG_DOC_DEFAULT, 
-                                          rate=rate_str, volume="+0%")
+        communicate = edge_tts.Communicate(text, GIONG_DOC_DEFAULT, rate=rate_str, volume="+0%")
         await communicate.save(filename)
     
     def _get_audio_duration(self, file_path):
         try:
-            cmd = [
-                self.ffprobe_path, "-v", "error",
-                "-show_entries", "format=duration",
-                "-of", "default=noprint_wrappers=1:nokey=1",
-                file_path
-            ]
+            cmd = [self.ffprobe_path, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file_path]
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               text=True, startupinfo=startupinfo)
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, startupinfo=startupinfo)
             return float(res.stdout.strip())
-        except:
-            return 0.0
+        except: return 0.0
     
     def _create_specific_silence(self, filename, duration):
-            """Tạo file silence chính xác từng miligiây bằng WAV"""
             if duration <= 0: return
-            cmd = [
-                self.ffmpeg_path, "-y", "-f", "lavfi",
-                "-i", f"anullsrc=r=24000:cl=mono:d={duration}",
-                "-c:a", "pcm_s16le", # Dùng PCM WAV để chính xác tuyệt đối
-                filename
-            ]
+            cmd = [self.ffmpeg_path, "-y", "-f", "lavfi", "-i", f"anullsrc=r=24000:cl=mono:d={duration}", "-c:a", "pcm_s16le", filename]
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                        startupinfo=startupinfo)
+            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
     
     def create_tts_track(self, subtitles, output_file, temp_folder):
-            # Đổi đuôi file output trung gian sang wav để ghép cho chuẩn
             concat_list_path = os.path.join(temp_folder, "mylist.txt").replace("\\", "/")
-            
-            # Biến quan trọng: Theo dõi độ dài thực tế của audio đã tạo
             current_audio_position = 0.0
             total_subs = len(subtitles)
-            
-            concat_files = [] # Lưu danh sách file để ghi vào mylist.txt sau
+            concat_files = [] 
 
             for i, item in enumerate(subtitles):
                 percent = 5 + (i / total_subs) * 75
-                self.update_progress(percent, f"🎤 Đang xử lý câu thoại {i+1}/{total_subs}...")
+                self.update_progress(percent, f"🎤 Đang tạo giọng đọc câu {i+1}/{total_subs}...")
                 self.update_counter(i + 1, total_subs)
                 
-                # 1. Tính toán khoảng lặng cần chèn TRƯỚC câu thoại
-                # Logic: Lấy thời gian bắt đầu mong muốn - thời gian audio hiện có
                 target_start_time = item['start']
                 gap_needed = target_start_time - current_audio_position
                 
-                if gap_needed > 0.05: # Chỉ chèn nếu gap > 50ms
+                if gap_needed > 0.05:
                     silence_filename = os.path.join(temp_folder, f"silence_{i}.wav").replace("\\", "/")
                     self._create_specific_silence(silence_filename, gap_needed)
                     concat_files.append(f"file '{silence_filename}'")
                     current_audio_position += gap_needed
                 
-                # 2. Xử lý TTS
                 if item['text']:
-                    # Dùng file WAV tạm thời
                     temp_wav = os.path.join(temp_folder, f"clip_{i}.wav").replace("\\", "/")
                     temp_mp3 = os.path.join(temp_folder, f"clip_{i}_raw.mp3").replace("\\", "/")
                     
-                    # Sinh file MP3 từ Edge TTS trước
                     asyncio.run(self._generate_clip(item['text'], temp_mp3))
                     
-                    # Convert MP3 sang WAV ngay lập tức để lấy độ dài chuẩn
-                    cmd_convert = [
-                        self.ffmpeg_path, "-y", "-i", temp_mp3, 
-                        "-c:a", "pcm_s16le", "-ar", "24000", temp_wav
-                    ]
+                    cmd_convert = [self.ffmpeg_path, "-y", "-i", temp_mp3, "-c:a", "pcm_s16le", "-ar", "24000", temp_wav]
                     startupinfo = subprocess.STARTUPINFO()
                     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     subprocess.run(cmd_convert, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
@@ -468,74 +435,88 @@ class AutoDubberApp:
                     actual_duration = self._get_audio_duration(temp_wav)
                     slot_duration = item['end'] - item['start']
 
-                    # 3. Kiểm tra tốc độ: Nếu nói dài hơn khung thời gian cho phép -> Tăng tốc
                     if actual_duration > slot_duration:
                         ratio = actual_duration / slot_duration
-                        increase_percent = int((ratio - 1) * 100) + 15 # +15% dư ra cho chắc
-                        self.log(f"⚡ Tăng tốc câu {i+1}: +{increase_percent}%")
-                        
-                        # Sinh lại file với tốc độ mới
+                        increase_percent = int((ratio - 1) * 100) + 15
                         asyncio.run(self._generate_clip(item['text'], temp_mp3, rate_str=f"+{increase_percent}%"))
-                        # Convert lại sang WAV
                         subprocess.run(cmd_convert, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
                         actual_duration = self._get_audio_duration(temp_wav)
 
                     concat_files.append(f"file '{temp_wav}'")
                     current_audio_position += actual_duration
-                
-                # LƯU Ý QUAN TRỌNG: 
-                # Không còn bước "Gap After" để lấp đầy đến item['end'].
-                # Chúng ta để thả nổi. Vòng lặp tiếp theo sẽ tự tính gap_needed 
-                # dựa trên current_audio_position thực tế. -> Đây là bước sửa lỗi trôi.
 
-            # Ghi file list
             with open(concat_list_path, "w", encoding='utf-8') as f:
-                for line in concat_files:
-                    f.write(line + "\n")
+                for line in concat_files: f.write(line + "\n")
 
-            # Concat all (xuất ra file wav tạm full track)
             full_wav_path = os.path.join(temp_folder, "full_track.wav").replace("\\", "/")
-            self.log("🔗 Đang ghép toàn bộ audio (WAV mode)...")
-            cmd = [
-                self.ffmpeg_path, "-y", "-f", "concat", "-safe", "0",
-                "-i", concat_list_path, "-c", "copy", full_wav_path
-            ]
+            cmd = [self.ffmpeg_path, "-y", "-f", "concat", "-safe", "0", "-i", concat_list_path, "-c", "copy", full_wav_path]
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                        startupinfo=startupinfo)
-            
-            # Convert full wav sang mp3 output cuối cùng (nếu cần) hoặc trả về wav
-            # Ở đây ta trả về wav để mix cho chất lượng tốt nhất
+            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
             shutil.move(full_wav_path, output_file)
     
     def mix_video_audio(self, video_in, audio_in, video_out):
         vol_v = self.vol_video_slider.get() / 100.0
         vol_a = self.vol_ai_slider.get() / 100.0
-        
-        filter_complex = (
-            f"[0:a]volume={vol_v}[original];"
-            f"[1:a]volume={vol_a}[new];"
-            f"[original][new]amix=inputs=2:duration=first:dropout_transition=0[aout]"
-        )
-        
-        cmd = [
-            self.ffmpeg_path, "-y",
-            "-i", video_in,
-            "-i", audio_in,
-            "-filter_complex", filter_complex,
-            "-map", "0:v:0",
-            "-map", "[aout]",
-            "-c:v", "copy",
-            "-c:a", "aac",
-            "-shortest",
-            video_out
-        ]
-        
+        filter_complex = (f"[0:a]volume={vol_v}[original];[1:a]volume={vol_a}[new];[original][new]amix=inputs=2:duration=first:dropout_transition=0[aout]")
+        cmd = [self.ffmpeg_path, "-y", "-i", video_in, "-i", audio_in, "-filter_complex", filter_complex, "-map", "0:v:0", "-map", "[aout]", "-c:v", "copy", "-c:a", "aac", "-shortest", video_out]
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                      startupinfo=startupinfo)
+        subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, startupinfo=startupinfo)
+    
+    # --- YOUTUBE DOWNLOAD (UPDATED) ---
+    def start_download_thread(self):
+            url = self.url_var.get().strip()
+            if not url:
+                messagebox.showwarning("Thiếu Link", "Vui lòng nhập Link YouTube!")
+                return
+            
+            # === THAY ĐỔI: Yêu cầu người dùng chọn nơi lưu file ngay lập tức ===
+            save_path = filedialog.asksaveasfilename(
+                defaultextension=".mp4",
+                filetypes=[("MP4 Video", "*.mp4")],
+                title="Chọn nơi lưu video tải về"
+            )
+            
+            if not save_path: # Nếu người dùng ấn Cancel
+                return
+
+            self.btn_download.config(state="disabled", text="⏳ Đang tải...", bg='#7f8c8d')
+            # Truyền save_path vào thread
+            threading.Thread(target=self.download_youtube_video, args=(url, save_path), daemon=True).start()
+
+    def download_youtube_video(self, url, save_path):
+            try:
+                self.root.after(0, lambda: self.log(f"⬇️ ĐANG TẢI: {url} -> {save_path}"))
+                
+                # Cấu hình yt-dlp để lưu đúng vào save_path người dùng chọn
+                ydl_opts = {
+                    'format': 'bestvideo+bestaudio/best',
+                    'merge_output_format': 'mp4', # Ép định dạng MP4
+                    'outtmpl': save_path,         # Ép đường dẫn đầu ra chính xác
+                    'quiet': True,
+                    'no_warnings': True,
+                    'overwrites': True
+                }
+                
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+                    video_title = info.get('title', 'Video')
+                
+                # Kiểm tra nếu file đã tồn tại (yt-dlp đôi khi thêm đuôi, nhưng với cấu hình trên thì khá chắc chắn)
+                if os.path.exists(save_path):
+                    # === THAY ĐỔI: Tự động cập nhật đường dẫn vào ô Input Video ===
+                    self.root.after(0, lambda: self.video_path.set(save_path))
+                    self.root.after(0, lambda: self.log(f"✅ TẢI XONG: {video_title}"))
+                    self.root.after(0, lambda: messagebox.showinfo("Thành công", f"Đã tải xong:\n{video_title}\n\nĐường dẫn đã được cập nhật vào mục Video Gốc."))
+                else: 
+                    raise Exception("Không tìm thấy file sau khi tải xong.")
+
+            except Exception as e:
+                self.root.after(0, lambda: self.log(f"❌ LỖI: {str(e)}"))
+                self.root.after(0, lambda: messagebox.showerror("Lỗi Tải", str(e)))
+            finally:
+                self.root.after(0, lambda: self.btn_download.config(state="normal", text="⬇️ Tải Video", bg='#c0392b'))
 
 if __name__ == "__main__":
     try:
