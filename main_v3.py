@@ -50,7 +50,7 @@ class ModernProgressBar(tk.Canvas):
 class AutoDubberApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("✨ Auto AI Dubbing Tool - Professional Edition")
+        self.root.title("✨ Auto AI Dubbing Tool - Professional Edition (Fixed Error Handling)")
         self.root.geometry("850x950") 
         self.root.resizable(True, True)
         self.root.minsize(850, 700)
@@ -220,7 +220,17 @@ class AutoDubberApp:
     def log(self, message):
         self.log_area.config(state='normal')
         timestamp = time.strftime('%H:%M:%S')
-        self.log_area.insert(tk.END, f"[{timestamp}] {message}\n")
+        
+        # Đổi màu nếu là lỗi
+        tag = None
+        if "❌" in message or "ERROR" in message:
+            self.log_area.tag_config('error', foreground='#e74c3c')
+            tag = 'error'
+        elif "⚠️" in message:
+            self.log_area.tag_config('warning', foreground='#f39c12')
+            tag = 'warning'
+            
+        self.log_area.insert(tk.END, f"[{timestamp}] {message}\n", tag)
         self.log_area.see(tk.END)
         self.log_area.config(state='disabled')
     
@@ -401,6 +411,9 @@ class AutoDubberApp:
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
     
+    # ----------------------------------------------------------------------
+    # 🔥 HÀM ĐÃ SỬA LỖI (FIXED)
+    # ----------------------------------------------------------------------
     def create_tts_track(self, subtitles, output_file, temp_folder):
             concat_list_path = os.path.join(temp_folder, "mylist.txt").replace("\\", "/")
             current_audio_position = 0.0
@@ -413,37 +426,72 @@ class AutoDubberApp:
                 self.update_counter(i + 1, total_subs)
                 
                 target_start_time = item['start']
+                target_end_time = item['end']
+                
+                # 1. Tính toán và thêm khoảng lặng trước câu thoại (Pre-gap)
+                # Phần này ít lỗi nên để ngoài try, hoặc nếu muốn an toàn tuyệt đối thì đưa vào trong luôn
                 gap_needed = target_start_time - current_audio_position
                 
                 if gap_needed > 0.05:
-                    silence_filename = os.path.join(temp_folder, f"silence_{i}.wav").replace("\\", "/")
+                    silence_filename = os.path.join(temp_folder, f"silence_gap_{i}.wav").replace("\\", "/")
                     self._create_specific_silence(silence_filename, gap_needed)
                     concat_files.append(f"file '{silence_filename}'")
                     current_audio_position += gap_needed
                 
-                if item['text']:
+                # 2. Xử lý tạo âm thanh (CÓ BẮT LỖI)
+                duration_slot = target_end_time - target_start_time
+                
+                try:
+                    if not item['text']: 
+                        raise Exception("Text rỗng")
+
                     temp_wav = os.path.join(temp_folder, f"clip_{i}.wav").replace("\\", "/")
                     temp_mp3 = os.path.join(temp_folder, f"clip_{i}_raw.mp3").replace("\\", "/")
                     
+                    # Sinh file MP3 gốc
                     asyncio.run(self._generate_clip(item['text'], temp_mp3))
                     
+                    # Convert sang WAV
                     cmd_convert = [self.ffmpeg_path, "-y", "-i", temp_mp3, "-c:a", "pcm_s16le", "-ar", "24000", temp_wav]
                     startupinfo = subprocess.STARTUPINFO()
                     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     subprocess.run(cmd_convert, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
 
+                    # Kiểm tra độ dài và tua nhanh nếu cần
                     actual_duration = self._get_audio_duration(temp_wav)
-                    slot_duration = item['end'] - item['start']
-
-                    if actual_duration > slot_duration:
-                        ratio = actual_duration / slot_duration
+                    
+                    if actual_duration > duration_slot:
+                        ratio = actual_duration / duration_slot
+                        # Tính % tăng tốc. Cộng thêm 15% buffer để chắc chắn nó ngắn hơn slot
                         increase_percent = int((ratio - 1) * 100) + 15
+                        
+                        # Fix lỗi rate âm hoặc quá lớn gây lỗi chuỗi
+                        if increase_percent < 0: increase_percent = 0
+                        
+                        # Sinh lại với tốc độ mới
                         asyncio.run(self._generate_clip(item['text'], temp_mp3, rate_str=f"+{increase_percent}%"))
                         subprocess.run(cmd_convert, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, startupinfo=startupinfo)
                         actual_duration = self._get_audio_duration(temp_wav)
 
                     concat_files.append(f"file '{temp_wav}'")
                     current_audio_position += actual_duration
+
+                except Exception as e:
+                    # 🔥 KHI CÓ LỖI XẢY RA Ở ĐÂY 🔥
+                    # 1. In log lỗi ra màn hình
+                    error_msg = f"⚠️ LỖI SKIP CÂU {i+1}: {str(e)}"
+                    self.log(error_msg)
+                    self.log(f"   ➥ Nội dung lỗi: \"{item['text'][:50]}...\"")
+                    self.log(f"   ➥ Thay thế bằng khoảng lặng {duration_slot:.2f}s")
+                    
+                    # 2. Tạo khoảng lặng thay thế (Fallback Silence)
+                    fallback_silence = os.path.join(temp_folder, f"silence_error_{i}.wav").replace("\\", "/")
+                    self._create_specific_silence(fallback_silence, duration_slot)
+                    
+                    # 3. Thêm file lặng vào danh sách ghép
+                    concat_files.append(f"file '{fallback_silence}'")
+                    current_audio_position += duration_slot
+                    # Chương trình sẽ tiếp tục vòng lặp sang câu tiếp theo...
 
             with open(concat_list_path, "w", encoding='utf-8') as f:
                 for line in concat_files: f.write(line + "\n")
