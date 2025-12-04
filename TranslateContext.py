@@ -16,7 +16,7 @@ genai.configure(api_key=api_key)
 # ================= CẤU HÌNH =================
 
 MODEL_NAME = "gemini-2.5-flash"
-INPUT_FILE = "input.txt"
+INPUT_FILE = "A:\\dataYTB\\Tua-Lai-Tuyet-Vong\\Scripts-Tualaituyetvong\\No-translate\\Script-No-translate-tap2.txt"
 OUTPUT_FILE = "output.txt"
 BATCH_SIZE = 500  # Mỗi lần gửi 500 câu thoại (1500 dòng)
 
@@ -32,13 +32,31 @@ def read_file_content(filepath):
 
 def translate_batch(batch_lines, model):
     prompt = """
-    Bạn là biên dịch viên phim Hàn Quốc "The Player 2".
-    Input: Các nhóm 3 dòng (Start, End, Korean Text).
-    Output: Dịch sang tiếng Việt, giữ đúng format [Start -> End] Nội dung.
-    Văn phong: Tự nhiên, đời thường, xã hội đen.
-    KHÔNG thêm lời dẫn.
-    
-    Dữ liệu:
+        Hãy đóng vai một Biên dịch viên kiêm Biên tập kịch bản lồng tiếng chuyên nghiệp, chuyên xử lý phim hoạt hình 3D Trung Quốc thể loại Tu Tiên (Huyền Huyễn, Kiếm Hiệp).
+        Nhiệm vụ: Xử lý dữ liệu thô (gồm thời gian và tiếng Trung), dịch sang tiếng Việt và tối ưu hóa câu từ để phù hợp với tốc độ đọc của AI (TTS).
+        Dữ liệu đầu vào (Input): Lặp lại theo chu kỳ 3 dòng:
+        Dòng 1: Thời gian bắt đầu (Start).
+        Dòng 2: Thời gian kết thúc (End).
+        Dòng 3: Nội dung tiếng Trung (thường là Voice-to-Text nên có lỗi đồng âm).
+        Yêu cầu đầu ra (Output) và Quy tắc xử lý (Cực kỳ quan trọng):
+        Định dạng (Format): Ghép thành 1 dòng duy nhất: [Start -> End] Nội dung tiếng Việt
+        Tối ưu hóa độ dài cho TTS (Ưu tiên số 1):
+        Tính toán thời gian: Bạn phải ước lượng khoảng thời gian ($End - Start$).
+        Nguyên tắc "Cắt gọt mạnh tay": Nếu khoảng thời gian ngắn (dưới 2s), câu dịch PHẢI cực ngắn.
+        Loại bỏ hư từ: Xóa bỏ hoàn toàn các từ đệm không cần thiết như: "thì, là, mà, bị, được, rằng, những, các, của...".
+        Văn phong khẩu ngữ: Chuyển văn viết thành văn nói cộc lốc, dứt khoát (ví dụ: "Ta không thể đi được" -> "Ta không thể đi").
+        Mục tiêu: Đảm bảo AI đọc thong thả, rõ chữ và kết thúc kịp trước khi sang dòng thời gian tiếp theo.
+        Ngữ cảnh & Thuật ngữ:
+        Dùng văn phong Tu Tiên/Cổ trang (Tại hạ, Bổn tọa, Đạo hữu, Ngươi/Ta, Hắn...).
+        Tuyệt đối không dùng từ hiện đại (Anh/Em/Cậu/Tớ).
+        Sửa lỗi dữ liệu nguồn (Voice-to-Text):
+        Văn bản gốc thường sai từ đồng âm. PHẢI suy luận ngữ cảnh để dịch đúng nghĩa.
+        Ví dụ: Thấy "Tiễn" (tên) ở ngữ cảnh thời gian -> Dịch là "Gian"; Thấy "Phong" (đóng) ở ngữ cảnh thời tiết -> Dịch là "Gió".
+        Ví dụ mẫu về cách xử lý độ dài và chỉ trả về phần nội dung dịch:
+        Input (1.2s): "Ngươi mau chóng rời khỏi nơi này đi nếu không sẽ gặp nguy hiểm"
+        Output Sai: [10s -> 11.2s] Ngươi mau chóng rời khỏi nơi này đi nếu không sẽ gặp nguy hiểm (Quá dài, đọc không kịp).
+        Output Đúng: [10s -> 11.2s] Ngươi mau đi! Ở đây nguy hiểm!
+        Hãy bắt đầu xử lý nội dung dưới đây:
     """
     full_prompt = prompt + "\n" + "\n".join(batch_lines)
     try:
